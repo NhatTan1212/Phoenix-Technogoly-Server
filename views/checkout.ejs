@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .content {
+        display: flex;
+        justify-content: center;
+      }
+
+      .order-summary img {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <div class="shipment-details">
+        <h1>Thông tin giao hàng</h1>
+        <input
+          type="text"
+          value="<%- dataUser.name %>"
+          placeholder="Họ và tên"
+          name="name"
+        />
+        <input
+          type="email"
+          value="<%- dataUser.email %>"
+          placeholder="Email"
+          name="email"
+        />
+        <input type="tel" value="" placeholder="Số điện thoại" name="tel" />
+        <input type="text" value="" placeholder="Địa chỉ" name="address" />
+        <h1>Phương thức thanh toán</h1>
+        <div class="form-radio">
+          <input type="radio" value="offline" name="radio-cod" id="radio-cod" />
+          <label for="radio-cod">Thanh toán khi giao hàng (COD)</label>
+        </div>
+        <div class="form-radio">
+          <input
+            type="radio"
+            value="QRCODE"
+            name="radio-bank"
+            id="radio-bank"
+          />
+          <label for="radio-bank">Chuyển khoản qua ngân hàng</label>
+        </div>
+        <div class="wrap-button">
+          <a class="back-cart" href="../cart">Giỏ hàng</a>
+          <button class="btn-order">Hoàn tất đơn hàng</button>
+        </div>
+      </div>
+      <div class="order-summary">
+        <table>
+          <tbody>
+            <% dataCart.forEach(function(cart) { %>
+            <tr>
+              <td>
+                <img src="/upload/<%- cart.avatar %>" alt="" />
+              </td>
+              <td><%- cart.prod_name %></td>
+            </tr>
+            <tr>
+              <td>Số lượng: <%- cart.count %></td>
+              <td>Giá: <%- cart.price %></td>
+              <td>Tổng Giá: <%- cart.price*cart.count %></td>
+            </tr>
+            <%}); %>
+          </tbody>
+        </table>
+        <div>
+          <input type="text" placeholder="Mã giảm giá" />
+          <button>Sử dụng</button>
+        </div>
+        <div>
+          <span>Xem thêm mã giảm giá</span>
+        </div>
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td>Giá sản phẩm</td>
+                <td><%- totalMoney %></td>
+              </tr>
+              <tr>
+                <td>Phí vận chuyển</td>
+                <td>...</td>
+              </tr>
+              <tr>
+                <td>Tổng cộng</td>
+                <td><%- totalMoney %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+            let radioCOD = document.querySelector("#radio-cod");
+            let radioBank = document.querySelector("#radio-bank");
+            console.log(radioBank);
+            console.log(radioCOD);
+            let isChecked = true;
+            radioBank.onclick = () => {
+              if (radioBank.checked == isChecked) {
+                radioCOD.checked = false;
+                console.log(radioBank.value);
+              }
+            };
+            radioCOD.onclick = () => {
+              if (radioCOD.checked == isChecked) {
+                radioBank.checked = false;
+                console.log(radioCOD.value);
+              }
+            };
+
+            let name = document.querySelector('input[name="name"]');
+            let user_address = document.querySelector('input[name="address"]');
+            let phone = document.querySelector('input[name="tel"]');
+            let email = document.querySelector('input[name="email"]');
+            let radios = document.querySelectorAll('input[type = "radio"]');
+            let paymentMethods;
+            let btnOrder = document.querySelector(".btn-order");
+
+            // console.log(btnOrder)
+            btnOrder.onclick = () => {
+              let dataproduct = [];
+              let productKey;
+
+              // `<% dataCart.forEach(function(cart, i) { %>`
+                dataproduct[`<%- i %>`] = { product_id: `<%- cart.product_id %>`, count: `<%- cart.count %>`, price: `<%- cart.price %>` };
+              // `<% }); %>`
+
+              console.log(dataproduct);
+              let url = new URL(document.location.href);
+              let queryParams = url.searchParams;
+              let productIds = queryParams.getAll("product_id");
+              // console.log( productIds);
+
+
+              radios.forEach((radio) => {
+                if (radio.checked) {
+                  paymentMethods = radio.value;
+                }
+              });
+              let dataOrder = {
+                dataproduct: dataproduct,
+                // productIds: productIds,
+                name: name.value,
+                user_address: user_address.value,
+                phone: phone.value,
+                email: email.value,
+                paymentMethods: paymentMethods,
+                total: `<%- totalMoney %>`,
+              };
+              console.log(dataOrder);
+              fetch("/dataorder", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataOrder),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.success == true) {
+                    alert("Đặt hàng thành công!");
+                    window.location.href = data.redirectUrl;
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                });
+            };
+  </script>
+</html>

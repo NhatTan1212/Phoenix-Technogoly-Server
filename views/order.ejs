@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .wrap-reviews {
+        /* background-color: gray; */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #78787875;
+        transition: opacity 0.75s, visibility 0.75s;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        display: none;
+      }
+      .reviews {
+        background: #fff;
+        padding: 15px;
+        position: fixed;
+        top: 20%;
+        /* left: 44%; */
+        border-radius: 5px;
+        max-height: 400px; /* Định chiều cao tối đa của phần tử reviews */
+        overflow-y: auto; /* Thêm thanh cuộn ngang khi nội dung vượt quá chiều cao */
+      }
+
+      .avt-product {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Mã đơn hàng</th>
+          <th>Tổng cộng</th>
+          <th>Hình thức thanh toán</th>
+          <th>Trạng thái</th>
+          <th>Ngày đặt</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(order) { %>
+        <tr>
+          <td><%- order.id %></td>
+          <td><%- order.total %></td>
+          <td><%- order.paymentMethods %></td>
+          <% if (order.is_transported != 0) { %> <% if (order.is_transported ==
+          1) { %>
+          <td>Đang vận chuyển</td>
+          <% } else if (order.is_transported == 2) { %>
+          <td>Đã giao hàng</td>
+          <% } %> <% } else { %> <% if (order.is_success == 0) { %>
+          <td>Đợi xác nhận</td>
+          <% } else if (order.is_success == 1) { %>
+          <td>Đã xác nhận</td>
+          <% } else if (order.is_success == 2) { %>
+          <td>Bị từ chối</td>
+          <% } %> <% } %>
+          <td><%- order.created_at %></td>
+          <% if (order.is_transported == 2) { %> <% if (order.is_rated == 1) {
+          %>
+          <td>
+            <button class="btn-see-review">Xem đánh giá</button>
+            <a href="../orderdetails/<%- order.id %>">Xem chi tiết</a>
+          </td>
+          <% } else if(order.rated !== 1) { %>
+          <td>
+            <button class="btn-review">Đánh giá</button>
+            <a href="../orderdetails/<%- order.id %>">Xem chi tiết</a>
+          </td>
+          <% } %> <% } else { %>
+          <td><a href="../orderdetails/<%- order.id %>">Xem chi tiết</a></td>
+          <% } %>
+        </tr>
+        <%}); %>
+      </tbody>
+    </table>
+    <div class="wrap-reviews">
+      <div class="reviews">
+        <h1>Đánh giá sản phẩm</h1>
+        <div class="list-product"></div>
+      </div>
+    </div>
+    <script>
+      // btnReviews.forEach(btnReview => {
+      // });
+      let btnReviews = document.querySelectorAll(".btn-review");
+      console.log(btnReviews);
+
+      `<% data.forEach(function(order,i) { %>`;
+        if (btnReviews.length == 1) {
+        btnReviews[0].onclick = () => {
+          console.log(btnReviews[0]);
+          fetch("../get-orderdetails/<%- order.id %>", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // if (data.success == true) {
+              console.log(data);
+              let wrapReviews = document.querySelector(".wrap-reviews");
+              let listProduct = document.querySelector(".list-product");
+              wrapReviews.style.display = "flex";
+
+              data.dataProduct.forEach((product) => {
+                listProduct.innerHTML += `
+              <h3>${product.prod_name}</h3>
+              <img class="avt-product" src="/upload/${product.avatar}" alt="">
+              <span>Rating</span>
+              <input type="number" name="" class="product-rating" placeholder="Nhập số sao :))">
+              <textarea name="" class="product-comment" rows="3" placeholder="Đánh giá sản phẩm"></textarea>
+              `;
+              });
+              listProduct.innerHTML += `
+            <button class="btn-add-reviews">Hoàn thành</button>
+            `;
+              let btnAddReviews = document.querySelector(".btn-add-reviews");
+              let ratings = document.querySelectorAll(".product-rating");
+              let comments = document.querySelectorAll(".product-comment");
+
+              let dataRatings = [];
+              let dataComments = [];
+              let productIds = [];
+              btnAddReviews.onclick = () => {
+                // console.log(btnAddReviews)
+                data.dataProduct.forEach((product, i) => {
+                  // console.log(product.id, ratings[i].value, comments[i].value)
+                  productIds.push(product.id);
+                  dataRatings.push(ratings[i].value);
+                  dataComments.push(comments[i].value);
+                });
+                console.log(dataRatings);
+                let dataReviews = {
+                  product_id: productIds,
+                  ratings: dataRatings,
+                  comments: dataComments,
+                };
+                // console.log(typeof(JSON.stringify(dataReviews)))
+                fetch("/reviews/<%- order.id %>", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(dataReviews),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.success == true) {
+                      fetch("/update-order-is-rated/<%- order.id %>", {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ is_rated: 1 }),
+                      })
+                        .then((response) => response.json())
+                        .then((result) => {
+                          alert("Đánh giá thành công!");
+                          window.location.href = result.redirectUrl;
+                          // console.log("Đã cập nhật sản phẩm:", result);
+                        })
+                        .catch((error) => {
+                          console.error("Lỗi:", error);
+                        });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                  });
+              };
+
+              // }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        };
+      }
+      if (btnReviews.length >= 2) {
+        btnReviews[`<%-i%>`].onclick = () => {
+          console.log(btnReviews[`<%- i %>`]);
+          fetch("../get-orderdetails/<%- order.id %>", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // if (data.success == true) {
+              console.log(data);
+              let wrapReviews = document.querySelector(".wrap-reviews");
+              let listProduct = document.querySelector(".list-product");
+              wrapReviews.style.display = "flex";
+
+              data.dataProduct.forEach((product) => {
+                listProduct.innerHTML += `
+              <h3>${product.prod_name}</h3>
+              <img class="avt-product" src="/upload/${product.avatar}" alt="">
+              <span>Rating</span>
+              <input type="number" name="" class="product-rating" placeholder="Nhập số sao :))">
+              <textarea name="" class="product-comment" rows="3" placeholder="Đánh giá sản phẩm"></textarea>
+              `;
+              });
+              listProduct.innerHTML += `
+            <button class="btn-add-reviews">Hoàn thành</button>
+            `;
+              let btnAddReviews = document.querySelector(".btn-add-reviews");
+              let ratings = document.querySelectorAll(".product-rating");
+              let comments = document.querySelectorAll(".product-comment");
+
+              let dataRatings = [];
+              let dataComments = [];
+              let productIds = [];
+              btnAddReviews.onclick = () => {
+                // console.log(btnAddReviews)
+                data.dataProduct.forEach((product, i) => {
+                  // console.log(product.id, ratings[i].value, comments[i].value)
+                  productIds.push(product.id);
+                  dataRatings.push(ratings[i].value);
+                  dataComments.push(comments[i].value);
+                });
+                console.log(dataRatings);
+                let dataReviews = {
+                  product_id: productIds,
+                  ratings: dataRatings,
+                  comments: dataComments,
+                };
+                // console.log(typeof(JSON.stringify(dataReviews)))
+                fetch("/reviews/<%- order.id %>", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(dataReviews),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.success == true) {
+                      fetch("/update-order-is-rated/<%- order.id %>", {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ is_rated: 1 }),
+                      })
+                        .then((response) => response.json())
+                        .then((result) => {
+                          alert("Đánh giá thành công!");
+                          window.location.href = result.redirectUrl;
+                          // console.log("Đã cập nhật sản phẩm:", result);
+                        })
+                        .catch((error) => {
+                          console.error("Lỗi:", error);
+                        });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                  });
+              };
+
+              // }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        };
+      }
+
+      `<%}); %>`;
+    </script>
+  </body>
+</html>

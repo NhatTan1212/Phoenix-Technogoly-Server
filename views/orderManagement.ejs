@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Mã đơn hàng</th>
+          <th>Tổng cộng</th>
+          <th>Hình thức thanh toán</th>
+          <th>Trạng thái</th>
+          <th>Ngày đặt</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach(function(order) { %>
+        <tr>
+          <td><%- order.id %></td>
+          <td><%- order.total %></td>
+          <td><%- order.paymentMethods %></td>
+          <td><%- order.is_success %></td>
+          <td><%- order.created_at %></td>
+          <td>
+            <a href="/order-success/<%- order.id %>">Đã xác nhận</a>
+            <a href="/order-reject/<%- order.id %>">Từ chối</a>
+            <a href="/order-shipping/<%- order.id %>">Đang vận chuyển</a>
+            <a href="/order-shipped/<%- order.id %>">Đã giao</a>
+            <a href="../orderdetails/<%- order.id %>">Xem chi tiết</a>
+        </td>
+        </tr>
+        <%}); %>
+      </tbody>
+    </table>
+  </body>
+  <script>
+    let btnSuccess = document.querySelectorAll('.btn-success')
+    let btnReject = document.querySelectorAll('.btn-reject')
+    let btnShipping = document.querySelectorAll('.btn-shipping')
+    let btnShipped = document.querySelectorAll('.btn-shipped')
+    btnSuccess.forEach(btnSuccess => {
+        console.log(btnSuccess)
+        
+    });
+    btnReject.forEach(btnReject => {
+        console.log(btnReject)
+        
+    });
+    btnShipping.forEach(btnShipping => {
+        console.log(btnShipping)
+        
+    });
+    btnShipped.forEach(btnShipped => {
+        console.log(btnShipped)
+        
+    });
+  </script>
+</html>

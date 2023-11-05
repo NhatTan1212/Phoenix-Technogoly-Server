@@ -1,0 +1,35 @@
+body {
+    width: 100%;
+    margin: 0;
+}
+
+
+.list-products {
+    text-align: center;
+}
+
+.list-products h1 {
+    text-align: start;
+}
+.wrap__products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+.product {
+    width: 23%;
+    margin: 20px 0;
+ 
+}
+
+.product img{
+    width: 100%;
+    border-radius: 10px;
+    height: 215px;
+}
+
+.wrap__button a{
+    margin: 0 10px;
+}

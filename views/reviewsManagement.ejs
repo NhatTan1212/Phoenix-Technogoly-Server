@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="listProduct.css">
+  </head>
+  <body>
+    <div class="list-products">
+      <h1>Quản lý đánh giá</h1>
+      <!-- <a class="add-new" href="/admin/addproducts">Add new product</a> -->
+      <div class="wrap__products">
+        <% products.forEach(function(product) { %>
+        <div class="product">
+          <a class="wrap__link" href="./reviews-management-by-product/<%- product.id %>">
+            <img src="/upload/<%- product.avatar %>" alt="" />
+            <div class="product-name"><%- product.prod_name %></div>
+          </a>
+          <!-- <div class="wrap__button">
+                    <a href="./editproduct/<%- product.id %>">Edit</a>
+                    <a href="./deleteproduct/<%- product.id %>">Delete</a>
+                </div> -->
+        </div>
+        <%}); %>
+      </div>
+    </div>
+  </body>
+</html>

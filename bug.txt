@@ -1,0 +1,4 @@
+bug phần chỉnh sửa sản phẩm:
+	- khi xóa hết hình ảnh chi tiết -> lưu -> hình ảnh vẫn giữ nguyên
+	- khi xóa hết hình ảnh chi tiết và thêm mới lại -> lưu -> hình ảnh đã xóa vẫn còn và thêm các hình ảnh vừa mới upload
+	

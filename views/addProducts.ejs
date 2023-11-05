@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        input {
+            margin: 10px 
+        }
+
+        .form-upload div{
+            display: flex;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h2>Add new product</h2>
+    <form action="/newproduct" method="post" enctype="multipart/form-data" class="form-upload" >
+        <div>
+            <input type="text" name="prod_name" placeholder="Tên sản phẩm">               <br>
+            <input type="text" name="prod_description" placeholder="Miêu tả sản phẩm">   <br>
+            <input type="text" name="manufacturer" placeholder="Tên thương hiệu">   <br>
+            <input type="text" name="price" placeholder="price">    <br>
+            <input type="text" name="cost" placeholder="cost">  <br>
+            <input type="text" name="quantity" placeholder="quantity">  <br>
+            
+        </div>
+        <div>
+            <input type="text" name="prod_percent" placeholder="percent">    <br>
+            <input type="text" name="cpu" placeholder="cpu">    <br>
+            <input type="text" name="hard_drive" placeholder="hard_drive">  <br>
+            <input type="text" name="operation_system" placeholder="operation_system">  <br>
+            <input type="text" name="mux_switch" placeholder="mux_switch">  <br>
+            <input type="text" name="screen" placeholder="screen">  <br>
+        </div>
+        <div>
+            <input type="text" name="webcam" placeholder="webcam">  <br>
+            <input type="text" name="connection" placeholder="connection">  <br>
+            <input type="text" name="prod_weight" placeholder="weight">  <br>
+            <input type="text" name="pin" placeholder="pin">    <br>
+            <input type="file" name="avatar">   <br>
+           
+
+        </div>
+
+        <input type="submit" value="Add new">
+    </form>
+
+
+    <!--  SINGLE FILE -->
+    <!-- <form action="/admin/uploadfile" enctype="multipart/form-data" method="POST">
+        <input type="file" name="myFile" />
+        <input type="submit" value="Upload a file" />
+    </form> -->
+
+
+    <!-- MULTIPLE FILES -->
+
+    <!-- <form action="/uploadmultiple" enctype="multipart/form-data" method="POST">
+        Select images: <input type="file" name="myFiles" multiple>
+        <input type="submit" value="Upload your files" />
+    </form> -->
+</body>
+</html>

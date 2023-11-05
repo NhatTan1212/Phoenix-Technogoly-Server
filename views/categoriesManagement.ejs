@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quản lý danh mục</title>
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      #brands-list,
+      #categories-list {
+        margin-bottom: 20px;
+      }
+
+      #brands,
+      #categories {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      #brands li,
+      #categories li {
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+
+      #brands li:hover,
+      #categories li:hover {
+        background-color: lightgray;
+      }
+
+      #add-brand,
+      #add-category {
+        margin-bottom: 20px;
+      }
+
+      input[type="text"],
+      button {
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Quản lý danh mục</h1>
+
+    <div id="brands-list">
+      <h2>Danh sách hãng</h2>
+      <ul id="brands">
+        <!-- Danh sách hãng sẽ được cập nhật thông qua JavaScript -->
+      </ul>
+    </div>
+
+    <div id="categories-list">
+      <h2>Danh sách danh mục</h2>
+      <ul id="categories">
+        <!-- Danh sách danh mục sẽ được cập nhật thông qua JavaScript -->
+      </ul>
+    </div>
+
+    <div id="add-brand">
+      <h2>Thêm hãng mới</h2>
+      <input type="text" id="brand-name" placeholder="Tên hãng" />
+      <input type="text" id="brand-description" placeholder="Mô tả hãng" />
+      <button id="add-brand-btn">Thêm hãng</button>
+    </div>
+
+    <div id="add-category">
+      <h2>Thêm danh mục mới</h2>
+      <input type="text" id="category-name" placeholder="Tên danh mục" />
+      <input
+        type="text"
+        id="category-description"
+        placeholder="Mô tả danh mục"
+      />
+      <button id="add-category-btn">Thêm danh mục</button>
+    </div>
+
+    <!-- <script src="script.js"></script> -->
+  </body>
+</html>

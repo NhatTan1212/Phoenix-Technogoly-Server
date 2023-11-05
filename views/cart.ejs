@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      body {
+        margin: 0;
+      }
+
+      img {
+        width: 150px;
+      }
+      .content {
+        text-align: center;
+      }
+
+      .form-checkbox {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .wrap-order {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        background-color: rgba(0, 0, 0, 0.45);
+        justify-content: center;
+        align-items: center;
+        display: none;
+      }
+
+      .payment-form {
+        position: fixed;
+        text-align: center;
+        width: auto;
+        background-color: white;
+        top: 10%;
+      }
+
+      .wrap-payment-option {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .payment-option {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .payment-option img {
+        width: 400px;
+        height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap-order">
+      <div class="payment-form">
+        <h1>Chọn hình thức thanh toán</h1>
+        <div class="wrap-payment-option">
+          <div class="payment-option vnpay">
+            <img src="/upload/vnpay.png" alt="" />
+            <button class="btn-vnpay">VNPAY</button>
+          </div>
+          <div class="payment-option offline">
+            <img src="/upload/offline.jpeg" alt="" />
+            <button class="btn-ofline">Thanh toán trực tiếp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="form-checkbox">
+        <div class="wrap-checkbox">
+          <input
+            type="checkbox"
+            name="checkbox-select-all-items"
+            id="checkbox-select-all"
+          />
+          <label for="checkbox-select-all">Chọn tất cả</label>
+        </div>
+        <button class="btn-delete-all">Xóa tất cả</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên sản phẩm</th>
+            <th>Miêu tả</th>
+            <th>Avatar</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Tổng cộng</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% data.forEach(function(cart) { %>
+          <tr>
+            <td>
+              <div class="form-checkbox">
+                <input
+                  type="checkbox"
+                  name="checkbox-select-item[]"
+                  class="checkbox-select-item"
+                  value="<%- cart.product_id %>"
+                />
+              </div>
+            </td>
+            <td><%- cart.prod_name %></td>
+            <td><%- cart.description %></td>
+            <td>
+              <img src="/upload/<%- cart.avatar %>" alt="" />
+            </td>
+            <td><%- cart.price %></td>
+            <td><%- cart.count %></td>
+            <td><%- cart.product_total %></td>
+            <td>
+              <button class="btn-delete">Delete</button>
+            </td>
+          </tr>
+          <%}); %>
+        </tbody>
+      </table>
+
+      <button class="btn-order">Đặt hàng</button>
+    </div>
+  </body>
+  <script>
+    let dataCart = {};
+    btndelete = document.querySelectorAll(".btn-delete");
+    // for (let i = 0; i < btndelete.length; i++) {
+      `<% data.forEach(function(cart,index) { %>`;
+    btndelete[`<%-index%>`].onclick = () => {
+      dataCart = {
+        user_id: `<%- cart.user_id %>`,
+        product_id: `<%- cart.product_id %>`,
+      };
+      console.log(btndelete[`<%-index%>`]);
+      console.log(dataCart);
+      fetch("/deletecart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataCart),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success == true) {
+            location.reload(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+    `<%}); %>`;
+    // }
+    // console.log(btndelete)
+
+    let checkboxAll = document.querySelector("#checkbox-select-all");
+    let checkboxItems = document.querySelectorAll(".checkbox-select-item");
+    console.log(checkboxItems);
+    checkboxAll.onclick = () => {
+      let isCheckedAll = checkboxAll.checked;
+      console.log(isCheckedAll);
+      checkboxItems.forEach((checkboxItem) => {
+        checkboxItem.checked = isCheckedAll;
+      });
+    };
+
+    checkboxItems.forEach((checkboxItem) => {
+      checkboxItem.onclick = () => {
+        let lengthItemsChecked = document.querySelectorAll(
+          "input[name='checkbox-select-item[]']:checked"
+        ).length;
+        let isCheckedAll = checkboxItems.length === lengthItemsChecked;
+        checkboxAll.checked = isCheckedAll;
+      };
+    });
+
+    let btnOrder = document.querySelector(".btn-order");
+    let wrapOder = document.querySelector(".wrap-order");
+    let btnVnpay = document.querySelector(".btn-vnpay");
+    let btnOfline = document.querySelector(".btn-ofline");
+
+    btnOrder.onclick = () => {
+      let product_id = [];
+      checkboxItems.forEach((checkboxItem) => {
+        if (checkboxItem.checked) {
+          console.log(checkboxItem.value);
+          // product_id.push(checkboxItem.value);
+          if (!product_id.includes(checkboxItem.value)) {
+            product_id.push(checkboxItem.value);
+          }
+        }
+      });
+      console.log(product_id);
+      let queryString = "";
+      // window.location.href = '/checkout';
+      for (var i = 0; i < product_id.length; i++) {
+        queryString += "product_id=" + product_id[i];
+
+        if (i !== product_id.length - 1) {
+          queryString += "&";
+        }
+      }
+
+      // queryString =
+
+      var url = "/checkout?" + queryString;
+      window.location.href = url;
+      // history.replaceState(null, null, window.location.pathname);
+    };
+  </script>
+</html>

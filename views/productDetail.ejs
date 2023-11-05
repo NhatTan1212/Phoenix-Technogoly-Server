@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      .wrap__content {
+        display: flex;
+        justify-content: space-evenly;
+      }
+
+      img {
+        width: 600px;
+      }
+
+      button {
+        margin-top: 20px;
+        background-color: rgb(232, 222, 90);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap__content">
+      <div>
+        <h1><%- data.prod_name %></h1>
+        <img src="/upload/<%- data.avatar %>" alt="" />
+        <h3><%- data.price %></h3>
+        <p><%- data.prod_description %></p>
+      </div>
+      <div>
+        <h2>Chi tiết</h2>
+        <table>
+          <tbody>
+            <tr>
+              <td>Tên sp</td>
+              <td><%- data.prod_name %></td>
+            </tr>
+            <tr>
+              <td>Hãng</td>
+              <td><%- data.manufacturer %></td>
+            </tr>
+            <tr>
+              <td>Cpu</td>
+              <td><%- data.cpu %></td>
+            </tr>
+            <tr>
+              <td>Ổ cứng</td>
+              <td><%- data.hard_drive %></td>
+            </tr>
+            <tr>
+              <td>Mux_switch</td>
+              <td><%- data.mux_switch %></td>
+            </tr>
+            <tr>
+              <td>Webcam</td>
+              <td><%- data.webcam %></td>
+            </tr>
+            <tr>
+              <td>Kết nối</td>
+              <td><%- data.connection %></td>
+            </tr>
+            <tr>
+              <td>Pin</td>
+              <td><%- data.pin %></td>
+            </tr>
+            <tr>
+              <td>Hệ điều hành</td>
+              <td><%- data.operation_system %></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Số lượng còn: <%- data.quantity %></p>
+        <div>
+          <span>Số lượng mua:</span>
+          <input type="text" />
+        </div>
+        <button>Thêm vào giỏ hàng</button>
+      </div>
+      
+    </div>
+    <div>
+      <h3>Đánh giá sản phẩm</h3>
+      <% if (reviews != null) {%>
+      <span>số lượt đánh giá: <%- reviews.length%></span>
+      <% let sum = 0 %>
+      <!-- <% reviews.forEach(function(review) { %>
+        <%-sum+=review.rating%>
+        <%}); %> -->
+      <br>
+      <span><%-sum/reviews.length %> Sao</span>
+      <br>
+      <% nameUsersRated.forEach(function(nameUserRated, i) { %>
+        <%-nameUserRated%> <%-reviews[i].rating%> <%-reviews[i].comment%>
+        <br>
+        <%}); %>
+        <% }%>
+    </div>
+  </body>
+
+  <script>
+ 
+    let btnAddCart = document.querySelector("button");
+    btnAddCart.onclick = () => {
+      let quantity = document.querySelector("input");
+      let dataCart = {
+        count: quantity.value,
+        product_id: `<%- data.id %>`,
+        product_name: `<%- data.prod_name %>`,
+        prod_description: `<%- data.prod_description %>`,
+        avatar: `<%- data.avatar %>`,
+        price: `<%- data.price %>`,
+        quantity: `<%- data.quantity %>`,
+      };
+      //   console.log(JSON.stringify(dataCart))
+      fetch("/addcart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataCart),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success == true) {
+            alert('Thêm vào giỏ hàng thành công!')
+            window.location.href = data.redirectUrl;
+          }
+          else if (data.message == "not logged in") {
+            alert('Bạn cần phải đăng nhập trước khi thêm sản phẩm!')
+            window.location.href = data.redirectUrl;
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+  </script>
+</html>
