@@ -5,7 +5,7 @@ const config = {
     user: process.env.AZURE_SQL_USER,
     password: process.env.AZURE_SQL_PASSWORD,
     server: process.env.AZURE_SQL_SERVER,
-    port: 1433,
+    port: parseInt(process.env.AZURE_SQL_PORT),
     database: process.env.AZURE_SQL_DATABASE,
     authentication: {
         type: 'default'
