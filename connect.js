@@ -2,11 +2,11 @@ const sql = require('mssql');
 require('dotenv').config()
 
 const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
+    user: process.env.AZURE_SQL_USER,
+    password: process.env.AZURE_SQL_PASSWORD,
+    server: process.env.AZURE_SQL_SERVER,
     port: 1433,
-    database: process.env.DB_NAME,
+    database: process.env.AZURE_SQL_DATABASE,
     authentication: {
         type: 'default'
     },
