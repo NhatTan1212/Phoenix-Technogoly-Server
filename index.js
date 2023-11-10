@@ -13,9 +13,6 @@ const path = require('path');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-
-
 app.use(session({
   secret: '123456tk',
   resave: false,
@@ -45,8 +42,8 @@ app.use(passport.authenticate('session'));
 // Start the browser and run the scraper
 
 app.use(express.static('public'));
-
+const port = process.env.PORT || 8000
 // Start the server
-app.listen(8000, function () {
+app.listen(port, function () {
   console.log('Server is listening on port 8000');
 });
