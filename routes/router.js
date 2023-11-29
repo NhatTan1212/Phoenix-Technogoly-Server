@@ -5,7 +5,6 @@ const router = express();
 
 router.use(express.json());
 router.use('/', require('./admin').routerAdmin);
-router.use('/web', require('./web').routerWeb);
 router.use('/', require('./login').routerLogin);
 router.use('/', require('./home').routerHome);
 router.use('/', require('./categories').routerCategories);

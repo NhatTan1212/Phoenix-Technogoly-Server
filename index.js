@@ -25,10 +25,10 @@ app.set('views', 'views')
 
 
 // Set up a route to serve the login.html file
-app.use(express.static(path.join(__dirname, 'public')))
+// app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', function (req, res) {
-  res.render('web');
+  res.json({ message: "hi" })
 });
 
 

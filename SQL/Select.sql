@@ -10,6 +10,27 @@ select * from REVIEWS
 select * from CATEGORIES
 select COUNT(*) FROM IMAGES
 
+UPDATE IMAGES
+SET url = REPLACE(url, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
+WHERE url LIKE 'http://localhost:8000/%';
+
+UPDATE PRODUCTS
+SET avatar = REPLACE(avatar, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
+WHERE avatar LIKE 'http://localhost:8000/%';
+
+UPDATE CARTS
+SET avatar = REPLACE(avatar, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
+WHERE avatar LIKE 'http://localhost:8000/%';
+
+UPDATE ORDERS
+SET avatar = REPLACE(avatar, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
+WHERE avatar LIKE 'http://localhost:8000/%';
+
+UPDATE BRANDS
+SET image = REPLACE(image, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
+WHERE image LIKE 'http://localhost:8000/%';
+
+
 ALTER TABLE ORDERS
 ADD status NVARCHAR(255);
 
