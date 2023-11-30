@@ -199,10 +199,10 @@ function login(req, res) {
         }
         // console.log(roleUser)
         if (roleUser === 'admin') {
-            let redirectUrl = '/Phoenix-technology/management'
+            let redirectUrl = 'Phoenix-technology/#/management'
             login(roleUser, redirectUrl);
         } else if (roleUser === 'user') {
-            let redirectUrl = '/Phoenix-technology/'
+            let redirectUrl = '/Phoenix-technology/#/'
             login(roleUser, redirectUrl);
         }
     })(req, res);

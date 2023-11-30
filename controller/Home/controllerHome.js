@@ -170,7 +170,7 @@ async function editProductPost(req, res) {
 
     //Update Avata
     if (req.files.avatar) {
-        updateProductData.avatar = 'http://localhost:8000/upload/' + req.files.avatar[0].filename;
+        updateProductData.avatar = 'https://phoenixlt.azurewebsites.net/upload/' + req.files.avatar[0].filename;
     } else {
         updateProductData.avatar = req.body.avatar;
     }
@@ -243,7 +243,7 @@ async function editProductPost(req, res) {
         listImage.forEach(image => {
             const newImage = new IMAGES({
                 product_id: productId,
-                url: 'http://localhost:8000/upload/' + image.filename
+                url: 'https://phoenixlt.azurewebsites.net/upload/' + image.filename
             });
             IMAGES.create(newImage, (err, result) => {
                 numCreate++;
