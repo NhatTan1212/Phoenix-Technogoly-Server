@@ -81,6 +81,71 @@ function laptopGaming(req, res) {
     });
 }
 
+
+function getLaptopsByQuery(req, res) {
+    const { query } = req.params;
+    console.log(query)
+    let categories;
+    let brands;
+    let sort;
+
+    const tableSortConvert = {
+        "gia-thap-den-cao": "price asc",
+        "gia-cao-den-thap": "price desc"
+    }
+
+    const splitQuery = (qr) => {
+        const arrParams = qr.split('=')[1];
+        console.log(arrParams);
+        if (arrParams.includes(',')) {
+            return "'" + arrParams.split(',').join("','") + "'"
+        } else {
+            return "'" + arrParams + "'"
+        }
+    }
+
+    const saveValue = (qr) => {
+        if (qr.includes('brand')) {
+            brands = splitQuery(qr)
+        }
+        if (qr.includes('category')) {
+            categories = splitQuery(qr)
+        }
+        if (qr.includes('sort')) {
+            sort = qr.split('=')[1];
+            sort = tableSortConvert[sort]
+        }
+    }
+
+    if (query.includes('&')) {
+        const arrQuery = query.split('&')
+        console.log(arrQuery);
+        arrQuery.forEach(qr => {
+            saveValue(qr)
+        });
+
+
+        Products.findByQuery(brands, categories, sort).then((data) => {
+            res.json(data)
+        })
+    } else {
+        if (query === 'allproduct') {
+            Products.find((err, data) => {
+                if (err) console.log(err);
+                else {
+                    res.json(data)
+                }
+            })
+        } else {
+            saveValue(query)
+            Products.findByQuery(brands, categories, sort).then((data) => {
+                res.json(data)
+            })
+
+        }
+    }
+}
+
 function users(req, res) {
     USERS.find((err, user) => {
         if (!err) {
@@ -914,7 +979,7 @@ function updateOrderIsRated(req, res) {
 }
 
 module.exports = {
-    home, laptopGaming, listImage, management, editProduct, editProductPost, deleteProduct, productDetail,
+    home, laptopGaming, getLaptopsByQuery, listImage, management, editProduct, editProductPost, deleteProduct, productDetail,
     cart, cartServer, addCart, deleteCart, updateCart, checkout, dataOrder, order, orderDetails, orderManagement,
     updateOrder, orderSuccess, orderReject, orderShipping, orderShipped, reviews, reviewsManagement,
     reviewsManagementByProduct, deleteReviews, updateOrderIsRated, users

@@ -112,6 +112,41 @@ Products.findById = async (id) => {
     });
 };
 
+Products.findByQuery = async (slugBrand, slugCategory, sort) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            let sqlStringAddProduct = `
+                SELECT * FROM PRODUCTS
+            `;
+
+            if (slugBrand !== undefined) {
+                sqlStringAddProduct += `WHERE brand_id IN (SELECT brand_id FROM BRANDS WHERE slug IN (${slugBrand}))`;
+            }
+
+            if (slugCategory !== undefined) {
+                if (slugBrand !== undefined) {
+                    sqlStringAddProduct += ' AND ';
+                } else {
+                    sqlStringAddProduct += ' WHERE ';
+                }
+                sqlStringAddProduct += `category_id IN (SELECT category_id FROM CATEGORIES WHERE slug IN (${slugCategory}))`;
+            }
+
+            if (sort !== undefined) {
+                sqlStringAddProduct += ' ORDER BY ' + sort;
+            }
+
+            const result = await pool.request().query(sqlStringAddProduct);
+            resolve(result.recordset);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
+
 Products.findByCategoryId = async (id, result) => {
     const pool = await connect;
     const sqlStringAddProduct = `
@@ -129,6 +164,40 @@ Products.findByCategoryId = async (id, result) => {
             sql.close();
         })
 }
+
+Products.findByCategorySlug = async (slug, result) => {
+    const pool = await connect;
+    const sqlStringAddProduct = `
+        SELECT * FROM PRODUCTS 
+        WHERE category_id IN (SELECT category_id FROM CATEGORIES WHERE slug IN (${slug}));
+    `;
+    await pool.request()
+        .query(sqlStringAddProduct, (err, data) => {
+            if (err) {
+                result(err);
+            } else {
+                result(null, data.recordset);
+                sql.close();
+            }
+        });
+};
+
+Products.findByBrandSlug = async (slug, result) => {
+    const pool = await connect;
+    const sqlStringAddProduct = `
+        SELECT * FROM PRODUCTS 
+        WHERE brand_id IN (SELECT brand_id FROM BRANDS WHERE slug IN (${slug}));
+    `;
+    await pool.request()
+        .query(sqlStringAddProduct, (err, data) => {
+            if (err) {
+                result(err);
+            } else {
+                result(null, data.recordset);
+                sql.close();
+            }
+        });
+};
 
 Products.updateById = async (id, newproduct, result) => {
     const pool = await connect;

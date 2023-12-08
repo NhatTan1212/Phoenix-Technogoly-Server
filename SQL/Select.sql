@@ -10,6 +10,14 @@ select * from REVIEWS
 select * from CATEGORIES
 select COUNT(*) FROM IMAGES
 
+UPDATE BRANDS
+SET slug = LOWER(name);
+
+SELECT id, brand_id, category_id, prod_name
+FROM PRODUCTS
+WHERE category_id IN (SELECT category_id FROM CATEGORIES WHERE slug IN ('laptop-gaming'));
+
+
 UPDATE IMAGES
 SET url = REPLACE(url, 'http://localhost:8000/', 'https://phoenixlt.azurewebsites.net/')
 WHERE url LIKE 'http://localhost:8000/%';
