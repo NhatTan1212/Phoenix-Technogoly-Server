@@ -96,6 +96,24 @@ IMAGES.deleteById = async (product_id, image_id, result) => {
             }
         })
 }
+IMAGES.deleteAllByProductId = async (product_id, result) => {
+    const pool = await connect;
+    const sqlStringAddProduct = `
+        DELETE FROM IMAGES
+        WHERE product_id = @product_id
+    `;
+    await pool.request()
+        .input('product_id', sql.INT, product_id)
+        .query(sqlStringAddProduct, (err, data) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('Delete image successful ')
+                result(null, data.recordset);
+                sql.close();
+            }
+        })
+}
 
 IMAGES.deleteByNum = async (product_id, num, result) => {
     const pool = await connect;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "node-sass Website_ban_laptop\\resources\\login.scss Website_ban_laptop\\public\\login.css"
   },

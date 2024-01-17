@@ -64,7 +64,7 @@ const uploadMuti = multer({
 function home(req, res) {
     Products.find((err, product) => {
         if (!err) {
-            console.log(req.session)
+            // console.log(product)
             // res.render("home", { data: product })
             res.json(product)
         }
@@ -224,18 +224,20 @@ async function editProductPost(req, res) {
         prod_percent: req.body.prod_percent,
         cpu: req.body.cpu,
         hard_drive: req.body.hard_drive,
+        ram: req.body.ram,
         mux_switch: req.body.mux_switch,
         screen: req.body.screen,
         webcam: req.body.webcam,
         connection: req.body.connection,
         prod_weight: req.body.prod_weight,
         pin: req.body.pin,
-        operation_system: req.body.operation_system
+        operation_system: req.body.operation_system,
+        graphics: req.body.graphics
     };
 
     //Update Avata
     if (req.files.avatar) {
-        updateProductData.avatar = 'https://phoenixlt.azurewebsites.net/upload/' + req.files.avatar[0].filename;
+        updateProductData.avatar = 'http://localhost:8000/upload/' + req.files.avatar[0].filename;
     } else {
         updateProductData.avatar = req.body.avatar;
     }
@@ -308,7 +310,7 @@ async function editProductPost(req, res) {
         listImage.forEach(image => {
             const newImage = new IMAGES({
                 product_id: productId,
-                url: 'https://phoenixlt.azurewebsites.net/upload/' + image.filename
+                url: 'http://localhost:8000/upload/' + image.filename
             });
             IMAGES.create(newImage, (err, result) => {
                 numCreate++;
@@ -350,16 +352,23 @@ async function editProductPost(req, res) {
 
 
 
-function deleteProduct(req, res) {
-    Products.deleteById(req.params.id, (err, product) => {
+async function deleteProduct(req, res) {
+    console.log(req.body);
+    IMAGES.deleteAllByProductId(req.body.product_id, (err, product) => {
         if (err) {
-            res.json({ "kq": 0, "errMsg": err });
+            res.json({ success: false });
+            console.log(err);
         }
-        else {
-            res.redirect('../management')
-        }
+        Products.deleteById(req.body.product_id, (err, product) => {
+            if (err) {
+                res.json({ "kq": 0, "errMsg": err });
+            }
+            else {
+                res.json({ success: true });
+            }
+        })
     })
-    // res.render('editProduct')
+
 }
 
 const getUsersFromReviews = async (reviews) => {
@@ -397,7 +406,8 @@ async function productDetail(req, res) {
             category: category[0].name,
             images: images,
             reviews: reviews,
-            nameUsersRated: nameUsersRated
+            nameUsersRated: nameUsersRated,
+            slug: category[0].slug
         };
 
         res.json(responseData);
@@ -786,64 +796,44 @@ function orderManagement(req, res) {
     })
 }
 
-function updateOrder(req, res) {
-    console.log(req.body)
-    console.log(req.params.id)
-    let order_id = req.params.id
-    let is_payment = req.body.is_payment
-    let is_approved = req.body.is_approved
-    let is_being_shipped = req.body.is_being_shipped
-    let is_transported = req.body.is_transported
-    let is_success = req.body.is_success
-    let countSuccessfulUpdate = 0
-    if (is_payment === 1) {
-        ORDERS.UpdatePaymentById(order_id, is_payment, (err, result) => {
-            if (err) {
-                console.log(err)
-                res.json({ mess: "Cập nhật trạng thái thanh toán thất bại", errDetail: err })
-            }
-            console.log("Cập nhật trạng thái thanh toán thành công")
-        })
+async function updateOrder(req, res) {
+    try {
+        const order_id = req.params.id;
+        const { is_payment, is_approved, is_being_shipped, is_transported, is_success } = req.body;
+
+        if (is_payment === 1) {
+            await ORDERS.UpdatePaymentById(order_id, is_payment);
+            console.log("Cập nhật trạng thái thanh toán thành công");
+        }
+
+        if (is_approved === 1) {
+            await ORDERS.UpdateApprovedById(order_id, is_approved);
+            console.log("Cập nhật trạng thái đơn hàng thành công");
+        }
+
+        if (is_being_shipped === 1) {
+            await ORDERS.UpdateShippingById(order_id, is_being_shipped);
+            console.log("Cập nhật trạng thái đơn hàng thành công");
+        }
+
+        if (is_transported === 1) {
+            await ORDERS.UpdateShippedById(order_id, is_transported);
+            console.log("Cập nhật trạng thái đơn hàng thành công");
+        }
+
+        if (is_success === 1) {
+            await ORDERS.UpdateSuccessById(order_id, is_success);
+            console.log("Cập nhật trạng thái đơn hàng thành công");
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: error });
     }
-    if (is_approved === 1) {
-        ORDERS.UpdateApprovedById(order_id, is_approved, (err, result) => {
-            if (err) {
-                console.log(err)
-                res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: err })
-            }
-            console.log("Cập nhật trạng thái đơn hàng thành công")
-        })
-    }
-    if (is_being_shipped === 1) {
-        ORDERS.UpdateShippingById(order_id, is_being_shipped, (err, result) => {
-            if (err) {
-                console.log(err)
-                res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: err })
-            }
-            console.log("Cập nhật trạng thái đơn hàng thành công")
-        })
-    }
-    if (is_transported === 1) {
-        ORDERS.UpdateShippedById(order_id, is_transported, (err, result) => {
-            if (err) {
-                console.log(err)
-                res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: err })
-            }
-            console.log("Cập nhật trạng thái đơn hàng thành công")
-        })
-    }
-    if (is_success === 1) {
-        ORDERS.UpdateSuccessById(order_id, is_success, (err, result) => {
-            if (err) {
-                console.log(err)
-                res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: err })
-            }
-            console.log("Cập nhật trạng thái đơn hàng thành công")
-        })
-    }
-    res.json({ success: true })
-    // res.render('editorder')
 }
+
+
 
 function orderShipped(req, res) {
     ORDERS.UpdateShippedById(req.params.id, (err, order) => {

@@ -149,108 +149,126 @@ ORDERS.UpdateOrder = async (id, result) => {
             }
         })
 }
-ORDERS.UpdateApprovedById = async (id, is_approved, result) => {
-    const pool = await connect;
-    const sqlStringAddProduct = `
-    UPDATE ORDERS
-    SET is_approved = @is_approved,
-    approved_at = CURRENT_TIMESTAMP
-    WHERE id = @id;
-    `;
-    await pool.request()
-        .input('id', sql.Int, id)
-        .input('is_approved', sql.Int, is_approved)
-        .query(sqlStringAddProduct, (err, data) => {
-            if (err) {
-                console.log(err)
-            } else {
-                // console.log(data)
-                result(null, data.recordset);
-            }
-        })
+ORDERS.UpdateApprovedById = async (id, is_approved) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            const sqlStringAddProduct = `
+            UPDATE ORDERS
+            SET is_approved = @is_approved,
+            approved_at = CURRENT_TIMESTAMP
+            WHERE id = @id;
+            `;
+
+            const data = await pool.request()
+                .input('id', sql.Int, id)
+                .input('is_approved', sql.Int, is_approved)
+                .query(sqlStringAddProduct);
+
+            resolve(data.recordset);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
 
-ORDERS.UpdatePaymentById = async (id, is_payment, result) => {
-    const pool = await connect;
-    const sqlStringAddProduct = `
-    UPDATE ORDERS
-    SET is_payment = @is_payment,
-    paid_at = CURRENT_TIMESTAMP
-    WHERE id = @id;
-    `;
-    await pool.request()
-        .input('id', sql.Int, id)
-        .input('is_payment', sql.Int, is_payment)
-        .query(sqlStringAddProduct, (err, data) => {
-            if (err) {
-                console.log(err)
-            } else {
-                // console.log(data)
-                result(null, data.recordset);
-            }
-        })
+ORDERS.UpdatePaymentById = async (id, is_payment) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            const sqlStringAddProduct = `
+            UPDATE ORDERS
+            SET is_payment = @is_payment,
+            paid_at = CURRENT_TIMESTAMP
+            WHERE id = @id;
+            `;
+
+            const data = await pool.request()
+                .input('id', sql.Int, id)
+                .input('is_payment', sql.Int, is_payment)
+                .query(sqlStringAddProduct);
+
+            resolve(data.recordset);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
 
-ORDERS.UpdateShippedById = async (id, is_transported, result) => {
-    const pool = await connect;
-    const sqlStringAddProduct = `
-    UPDATE ORDERS
-    SET is_transported = @is_transported,
-    transported_at = CURRENT_TIMESTAMP
-    WHERE id = @id;
-    `;
-    await pool.request()
-        .input('id', sql.Int, id)
-        .input('is_transported', sql.Int, is_transported)
-        .query(sqlStringAddProduct, (err, data) => {
-            if (err) {
-                console.log(err)
-            } else {
-                // console.log(data)
-                result(null, data.recordset);
-            }
-        })
+ORDERS.UpdateShippedById = async (id, is_transported) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            const sqlStringAddProduct = `
+            UPDATE ORDERS
+            SET is_transported = @is_transported,
+            transported_at = CURRENT_TIMESTAMP
+            WHERE id = @id;
+            `;
+
+            const data = await pool.request()
+                .input('id', sql.Int, id)
+                .input('is_transported', sql.Int, is_transported)
+                .query(sqlStringAddProduct);
+
+            resolve(data.recordset);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
-ORDERS.UpdateShippingById = async (id, is_being_shipped, result) => {
-    const pool = await connect;
-    const sqlStringAddProduct = `
-    UPDATE ORDERS
-    SET is_being_shipped = @is_being_shipped,
-    being_shipped_at = CURRENT_TIMESTAMP
-    WHERE id = @id;
-    `;
-    await pool.request()
-        .input('id', sql.Int, id)
-        .input('is_being_shipped', sql.Int, is_being_shipped)
-        .query(sqlStringAddProduct, (err, data) => {
-            if (err) {
-                console.log(err)
-            } else {
-                // console.log(data)
-                result(null, data.recordset);
-            }
-        })
+
+ORDERS.UpdateShippingById = async (id, is_being_shipped) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            const sqlStringAddProduct = `
+            UPDATE ORDERS
+            SET is_being_shipped = @is_being_shipped,
+            being_shipped_at = CURRENT_TIMESTAMP
+            WHERE id = @id;
+            `;
+
+            const data = await pool.request()
+                .input('id', sql.Int, id)
+                .input('is_being_shipped', sql.Int, is_being_shipped)
+                .query(sqlStringAddProduct);
+
+            resolve(data.recordset);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
-ORDERS.UpdateSuccessById = async (id, is_success, result) => {
-    const pool = await connect;
-    const sqlStringAddProduct = `
-    UPDATE ORDERS
-    SET is_success = @is_success,
-    successful_at = CURRENT_TIMESTAMP
-    WHERE id = @id;
-    `;
-    await pool.request()
-        .input('id', sql.Int, id)
-        .input('is_success', sql.Int, is_success)
-        .query(sqlStringAddProduct, (err, data) => {
-            if (err) {
-                console.log(err)
-            } else {
-                // console.log(data)
-                result(null, data.recordset);
-            }
-        })
+
+ORDERS.UpdateSuccessById = async (id, is_success) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pool = await connect;
+            const sqlStringAddProduct = `
+            UPDATE ORDERS
+            SET is_success = @is_success,
+            successful_at = CURRENT_TIMESTAMP
+            WHERE id = @id;
+            `;
+
+            const data = await pool.request()
+                .input('id', sql.Int, id)
+                .input('is_success', sql.Int, is_success)
+                .query(sqlStringAddProduct);
+
+            resolve(data.recordset);
+        } catch (err) {
+            console.log(err);
+            reject(err);
+        }
+    });
 }
+
 ORDERS.UpdateRejectById = async (id, result) => {
     const pool = await connect;
     const sqlStringAddProduct = `

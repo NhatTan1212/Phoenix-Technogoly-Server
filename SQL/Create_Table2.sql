@@ -59,6 +59,8 @@ SET IDENTITY_INSERT PRODUCTS ON;
 ALTER TABLE PRODUCTS
 ADD brand_id INT
 ADD FOREIGN KEY (brand_id) REFERENCES BRANDS (brand_id),
+ALTER TABLE PRODUCTS
+ADD ram Nvarchar(125), graphics Nvarchar(125)
 
 ADD category_id INT,
 ADD FOREIGN KEY (category_id) REFERENCES CATEGORIES (category_id);

@@ -1,4 +1,4 @@
-select * from USERS
+﻿select * from USERS
 Select * from IMAGES
 select * from PRODUCTS
 select * from BRANDS
@@ -12,6 +12,26 @@ select COUNT(*) FROM IMAGES
 
 UPDATE BRANDS
 SET slug = LOWER(name);
+
+UPDATE CATEGORIES
+SET slug = 'laptop-gaming'
+where name='Laptop Gaming'
+
+UPDATE CATEGORIES
+SET slug = 'laptop-vanphong'
+where name=N'Laptop Văn Phòng'
+
+UPDATE CATEGORIES
+SET slug = 'laptop-caocap-sangtrong'
+where name=N'Laptop Cao Cấp - Sang Trọng'
+
+UPDATE CATEGORIES
+SET slug = 'laptop-dohoa-kythuat'
+where name=N'Laptop Đồ Họa - Kỹ Thuật'
+
+UPDATE CATEGORIES
+SET slug = 'laptop-mongnhe-thoitrang'
+where name=N'Laptop Mỏng Nhẹ - Thời Trang'
 
 SELECT id, brand_id, category_id, prod_name
 FROM PRODUCTS

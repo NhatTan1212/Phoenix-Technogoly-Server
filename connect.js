@@ -1,6 +1,7 @@
 const sql = require('mssql');
 require('dotenv').config()
 
+
 const config = {
     user: process.env.AZURE_SQL_USER,
     password: process.env.AZURE_SQL_PASSWORD,
@@ -11,7 +12,8 @@ const config = {
         type: 'default'
     },
     options: {
-        encrypt: true
+        // encrypt: true
+        encrypt: false
     }
 }
 console.log(config)

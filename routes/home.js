@@ -47,7 +47,7 @@ routerHome.get('/laptop-gaming', controllerHome.laptopGaming)
 routerHome.get('/laptops/:query', controllerHome.getLaptopsByQuery);
 routerHome.get('/editproduct/:id', authMiddleware.isAuthAdmin, controllerHome.editProduct)
 routerHome.post('/editproduct', uploadMuti, authMiddleware.isAuthAdmin, controllerHome.editProductPost)
-routerHome.get('/deleteproduct/:id', authMiddleware.isAuthAdmin, controllerHome.deleteProduct)
+routerHome.post('/deleteproduct', authMiddleware.isAuthAdmin, controllerHome.deleteProduct)
 routerHome.get('/product-detail/:id', controllerHome.productDetail)
 routerHome.post('/cart', controllerHome.cart)
 routerHome.get('/cart-server', controllerHome.cartServer)
