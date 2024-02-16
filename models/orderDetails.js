@@ -34,15 +34,15 @@ ORDER_DETAILS.find = async (result) => {
         select * FROM ORDER_DETAILS
     `;
     await pool.request()
-    .query(sqlStringAddProduct, (err, data) => {
-        if(err) {
-            console.log(err)
-        } else {
-            // console.log(data)
-        }
-        result(null, data.recordset);
-        sql.close();
-    })
+        .query(sqlStringAddProduct, (err, data) => {
+            if (err) {
+                console.log(err)
+            } else {
+                // console.log(data)
+            }
+            result(null, data.recordset);
+            sql.close();
+        })
 }
 
 ORDER_DETAILS.findById = async (order_id, result) => {
@@ -61,6 +61,20 @@ ORDER_DETAILS.findById = async (order_id, result) => {
             }
         })
 }
-
+ORDER_DETAILS.deleteById = async (id, result) => {
+    const pool = await connect
+    sqlString = 'delete from ORDER_DETAILS Where order_id = @id'
+    await pool.request()
+        .input('id', sql.Int, id)
+        .query(sqlString, (err, data) => {
+            if (err) {
+                console.log(err);
+                result(err, null)
+            } else {
+                result(null, data.recordset)
+                sql.close()
+            }
+        })
+}
 
 module.exports = ORDER_DETAILS;

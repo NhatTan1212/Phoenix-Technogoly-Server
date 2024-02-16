@@ -107,7 +107,22 @@ ORDERS.findById = async (user_id, guest_id, result) => {
             }
         })
 }
-
+ORDERS.findByOrderId = async (order_id, result) => {
+    const pool = await connect;
+    const sqlStringAddProduct = `
+        select * FROM ORDERS where id = @order_id
+    `;
+    await pool.request()
+        .input('order_id', sql.Int, order_id)
+        .query(sqlStringAddProduct, (err, data) => {
+            if (err) {
+                console.log(err)
+            } else {
+                // console.log(data)
+                result(null, data.recordset);
+            }
+        })
+}
 
 ORDERS.selectLast = async (result) => {
     const pool = await connect;
@@ -303,6 +318,22 @@ ORDERS.updateOrderIsRatedById = async (id, result) => {
             } else {
                 // console.log(data)
                 result(null, data.recordset);
+            }
+        })
+}
+
+ORDERS.deleteById = async (id, result) => {
+    const pool = await connect
+    sqlString = 'delete from ORDERS Where id = @id'
+    await pool.request()
+        .input('id', sql.Int, id)
+        .query(sqlString, (err, data) => {
+            if (err) {
+                console.log(err);
+                result(err, null)
+            } else {
+                result(null, data.recordset)
+                sql.close()
             }
         })
 }

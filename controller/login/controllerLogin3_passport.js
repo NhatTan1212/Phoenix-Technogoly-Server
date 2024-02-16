@@ -202,7 +202,7 @@ function login(req, res) {
             let redirectUrl = '/Phoenix-technology#/management'
             login(roleUser, redirectUrl);
         } else if (roleUser === 'user') {
-            let redirectUrl = '/Phoenix-technology#/auth'
+            let redirectUrl = '/Phoenix-technology#/'
             login(roleUser, redirectUrl);
         }
     })(req, res);

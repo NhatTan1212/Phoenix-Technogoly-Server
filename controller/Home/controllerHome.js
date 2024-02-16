@@ -800,33 +800,44 @@ async function updateOrder(req, res) {
     try {
         const order_id = req.params.id;
         const { is_payment, is_approved, is_being_shipped, is_transported, is_success } = req.body;
+        console.log(req.body);
+        ORDERS.findByOrderId(order_id, async (err, data) => {
+            if (err) {
+                return res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: error });
+            } else {
+                data = data[0]
+                console.log(data);
+                if (is_payment !== data.is_payment) {
+                    await ORDERS.UpdatePaymentById(order_id, is_payment);
+                    console.log("Cập nhật trạng thái thanh toán thành công");
+                }
 
-        if (is_payment === 1) {
-            await ORDERS.UpdatePaymentById(order_id, is_payment);
-            console.log("Cập nhật trạng thái thanh toán thành công");
-        }
+                if (is_approved !== data.is_approved) {
+                    await ORDERS.UpdateApprovedById(order_id, is_approved);
+                    console.log("Cập nhật trạng thái đã xác nhận đơn hàng thành công");
+                }
 
-        if (is_approved === 1) {
-            await ORDERS.UpdateApprovedById(order_id, is_approved);
-            console.log("Cập nhật trạng thái đơn hàng thành công");
-        }
+                if (is_being_shipped !== data.is_being_shipped) {
+                    await ORDERS.UpdateShippingById(order_id, is_being_shipped);
+                    console.log("Cập nhật trạng thái đang giao hàng thành công");
+                }
 
-        if (is_being_shipped === 1) {
-            await ORDERS.UpdateShippingById(order_id, is_being_shipped);
-            console.log("Cập nhật trạng thái đơn hàng thành công");
-        }
+                if (is_transported !== data.is_transported) {
+                    await ORDERS.UpdateShippedById(order_id, is_transported);
+                    console.log("Cập nhật trạng thái đã giao hàng thành công");
+                }
 
-        if (is_transported === 1) {
-            await ORDERS.UpdateShippedById(order_id, is_transported);
-            console.log("Cập nhật trạng thái đơn hàng thành công");
-        }
+                if (is_success !== data.is_success) {
+                    await ORDERS.UpdateSuccessById(order_id, is_success);
+                    console.log("Cập nhật trạng thái đơn hàng hoàn tất thành công");
+                }
 
-        if (is_success === 1) {
-            await ORDERS.UpdateSuccessById(order_id, is_success);
-            console.log("Cập nhật trạng thái đơn hàng thành công");
-        }
+                return res.json({ success: true });
+            }
+        })
 
-        res.json({ success: true });
+
+
     } catch (error) {
         console.error(error);
         res.json({ mess: "Cập nhật trạng thái đơn hàng thất bại", errDetail: error });
@@ -915,6 +926,44 @@ function reviews(req, res) {
 
 }
 
+async function deleteOrder(req, res) {
+    try {
+        const orderId = req.body.order_id;
+
+        // Xóa order_details
+        await new Promise((resolve, reject) => {
+            ORDER_DETAILS.deleteById(orderId, (err, data) => {
+                if (err) {
+                    console.log('Xóa order_detail thất bại - ', err);
+                    reject(err);
+                } else {
+                    console.log('Xóa order_detail thành công.');
+                    resolve();
+                }
+            });
+        });
+
+        // Xóa orders
+        await new Promise((resolve, reject) => {
+            ORDERS.deleteById(orderId, (err, data) => {
+                if (err) {
+                    console.log('Xóa order thất bại - ', err);
+                    reject(err);
+                } else {
+                    console.log('Xóa order thành công.');
+                    resolve();
+                }
+            });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Lỗi khi xóa order:', error);
+        res.status(500).json({ message: 'Đã xảy ra lỗi khi xóa order' });
+    }
+}
+
+
 function reviewsManagement(req, res) {
     let token = req.cookies.token
     let verify = jwt.verify(token, 'secretId')
@@ -972,5 +1021,5 @@ module.exports = {
     home, laptopGaming, getLaptopsByQuery, listImage, management, editProduct, editProductPost, deleteProduct, productDetail,
     cart, cartServer, addCart, deleteCart, updateCart, checkout, dataOrder, order, orderDetails, orderManagement,
     updateOrder, orderSuccess, orderReject, orderShipping, orderShipped, reviews, reviewsManagement,
-    reviewsManagementByProduct, deleteReviews, updateOrderIsRated, users
+    reviewsManagementByProduct, deleteReviews, updateOrderIsRated, users, deleteOrder
 }

@@ -64,6 +64,7 @@ routerHome.get('/order-success/:id', authMiddleware.isAuthAdmin, controllerHome.
 routerHome.get('/order-reject/:id', authMiddleware.isAuthAdmin, controllerHome.orderReject)
 routerHome.get('/order-shipping/:id', authMiddleware.isAuthAdmin, controllerHome.orderShipping)
 routerHome.get('/order-shipped/:id', authMiddleware.isAuthAdmin, controllerHome.orderShipped)
+routerHome.post('/deleteorder', authMiddleware.isAuthAdmin, controllerHome.deleteOrder)
 routerHome.post('/get-orderdetails/:id', authMiddleware.isAuth, controllerHome.orderDetails)
 routerHome.post('/reviews/:id', authMiddleware.isAuth, controllerHome.reviews)
 routerHome.get('/reviews-management', authMiddleware.isAuthAdmin, controllerHome.reviewsManagement)
