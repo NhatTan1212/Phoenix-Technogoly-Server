@@ -57,6 +57,7 @@ routerHome.post('/updatecart', controllerHome.updateCart)
 routerHome.get('/checkout?', controllerHome.checkout)
 routerHome.post('/dataorder', controllerHome.dataOrder)
 routerHome.post('/order', controllerHome.order)
+routerHome.post('/create_payment_url', controllerHome.createPaymentVNPAY);
 routerHome.get('/orderdetails/:id', controllerHome.orderDetails)
 routerHome.post('/order-management', authMiddleware.isAuthAdmin, controllerHome.orderManagement)
 routerHome.post('/order-management/update/:id', authMiddleware.isAuthAdmin, controllerHome.updateOrder)
